@@ -1,0 +1,86 @@
+package gitlog;
+
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+
+public class shell {
+	 public static String getdifference(String cmd) throws Exception {  
+	      
+		 Runtime rt = Runtime.getRuntime();	        
+	        Process pcs= rt.exec(cmd
+	            		);   
+	  
+	        // 定义shell返回值  
+	        String result = "";  	  
+	        // 获取shell返回流  
+	        BufferedInputStream in = new BufferedInputStream(pcs.getInputStream());  
+	        // 字符流转换字节流  
+	        BufferedReader br = new BufferedReader(new InputStreamReader(in));  
+	        // 这里也可以输出文本日志  
+	        String lineStr;  
+	        int i = 0;
+	        while ((lineStr = br.readLine()) != null) { 
+	        	i++;
+	        	if(i>3)
+	            result+= lineStr+"\n";  
+	        }  
+	        // 关闭输入流  
+	        br.close();  
+	        in.close();  
+	        //System.out.println(result);  
+	        return result;        
+	    }  
+	 
+	 public static ArrayList<String>  getstat(String cmd) throws Exception {  
+	      ArrayList<String> result = new ArrayList<String>();
+		 Runtime rt = Runtime.getRuntime();	        
+	        Process pcs= rt.exec(cmd
+	            		);   
+	  
+	        // 定义shell返回值  
+	        String info = "";  	  
+	        // 获取shell返回流  
+	        BufferedInputStream in = new BufferedInputStream(pcs.getInputStream());  
+	        // 字符流转换字节流  
+	        BufferedReader br = new BufferedReader(new InputStreamReader(in));  
+	        // 这里也可以输出文本日志  
+	        String lineStr;  
+	        int i = 0;
+	        int isend=0;
+	        while ((lineStr = br.readLine()) != null) { 
+	        	i++;
+	        	if(i>1&&(!(lineStr.contains(" files changed, ")||lineStr.contains(" file changed, "))))
+	            info+= lineStr+"\n";
+	        	
+	        	if(i>1&&((lineStr.contains(" file changed, ")||lineStr.contains(" files changed, ")))){
+	        		result.add(info);
+	        	
+//	        			//解析,1 file changed, insertion, delete
+	        			String[] stat = lineStr.split(", ");
+	        			for(int j = 0;j<stat.length;j++){
+	        				//System.out.println("split"+stat[j]);
+	        				String[] number = stat[j].split(" "); 
+	        				if(j==0){
+	        				result.add(number[1]);
+	        				}else{
+	        					result.add(number[0]);
+	        				}	
+	        			}
+	        		isend = 1;
+	        	}
+	        	
+	        	if(isend==1){
+	        	System.out.println("break");
+	        		break;
+	        	}
+	        }  
+	        // 关闭输入流  
+	        br.close();  
+	        in.close();  
+	        //System.out.println(result);  
+	        return result;        
+	    }  
+	 
+}

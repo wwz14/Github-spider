@@ -1,0 +1,53 @@
+package gitlog;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.ArrayList;
+
+public class stat {
+	 Connection conn;
+	   Process process;
+	public stat(){
+		 SQLcon connect = new SQLcon("githublog");
+		 conn = connect.getConn();
+	}
+	
+	public static void main(String[] args) {
+		stat s = new stat();
+		try {
+			s.putstat("binlog");
+			//d.putstat("jdtlog");
+			
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+ 
+	public void putstat(String tablename) throws Exception {
+		String select = "select * from "+tablename;
+		//Statement statement = conn.createStatement() ;
+		PreparedStatement ps = conn.prepareStatement(select);
+		ResultSet rs = ps.executeQuery();
+		//cdCommand("cd "+path);
+		while(rs.next()){
+			String commit = rs.getString(1);
+			//调用命令行
+			String cmd = "sh /Users/alice/Documents/getstat.sh " + commit;
+			ArrayList<String> stat = shell.getstat(cmd);
+			for(String str:stat){
+				System.out.println("str:"+str);
+			}
+			System.out.println("That's the end");
+			
+			String update = "update "+tablename +" set file_change=?,file_change_number=?,"
+					+ "insertion=?,delete=? where commit=?;";
+//			PreparedStatement ps2 = conn.prepareStatement(update);
+//			ps2.setString(1, difference);
+//			ps2.setString(2, commit);
+//			ps2.execute();
+		}
+	}
+	
+}

@@ -1,0 +1,81 @@
+package gitlog;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+
+public class diff {
+	   Connection conn;
+	public diff(){
+		 SQLcon connect = new SQLcon("githublog");
+		 conn = connect.getConn();
+	}
+	
+	public static void main(String[] args) {
+		diff d = new diff();
+		try {
+			d.putdiff("binlog", "/Users/alice/eclipse.jdt.core.binaries");
+		} catch (SQLException | IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+   
+	public void putdiff(String tablename,String path) throws SQLException, IOException {
+		String select = "select * from "+tablename;
+		Statement statement = conn.createStatement() ;
+		PreparedStatement ps = conn.prepareStatement(select);
+		ResultSet rs = ps.executeQuery();
+		cdCommand("cd "+path);
+		while(rs.next()){
+			String commit = rs.getString(1);
+			//调用命令行
+			String difference = shell("git show "+commit);
+			System.out.println(difference);
+			
+		}
+	}
+	
+	public String shell(String command) throws IOException {
+	     Process process = null;
+	     String result = "";
+	        Runtime rt = Runtime.getRuntime();
+	        try {
+	            process = rt.exec(command);
+	        } catch (IOException e) {
+	            e.printStackTrace();
+	        }
+	        try {
+	            process.waitFor();
+	        } catch (InterruptedException e) {
+	            // TODO Auto-generated catch block
+	            e.printStackTrace();
+	        }
+	        InputStream is = process.getInputStream();
+	        BufferedReader br = new BufferedReader(new InputStreamReader(is)); 
+	        String b;
+	        while((b=br.readLine())!=null){
+	            result+=b+"\n";
+	            System.out.println("in line");
+	        }
+			return result;
+	    }
+	
+	public void cdCommand(String cd) {
+		Process process = null;
+	     String result = "";
+	        Runtime rt = Runtime.getRuntime();
+	        try {
+	            process = rt.exec(cd);
+	        } catch (IOException e) {
+	            e.printStackTrace();
+	        }
+	}
+	}
+

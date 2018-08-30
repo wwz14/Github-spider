@@ -1,0 +1,8 @@
+package gitlog;
+
+public class diff {
+	public diff(){
+		
+	}
+
+}

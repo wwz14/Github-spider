@@ -1,0 +1,27 @@
+package gitlog;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+
+public class diff {
+	   Connection conn;
+	public diff(){
+		 SQLcon connect = new SQLcon("githublog");
+		 conn = connect.getConn();
+	}
+   
+	public void putdiff(String tablename,String path) throws SQLException {
+		String select = "select * from "+tablename;
+		Statement statement = conn.createStatement() ;
+		PreparedStatement ps = conn.prepareStatement(select);
+		ResultSet rs = ps.executeQuery();
+		while(rs.next()){
+			String commit = rs.getString(1);
+			//调用命令行
+			
+		}
+	}
+}

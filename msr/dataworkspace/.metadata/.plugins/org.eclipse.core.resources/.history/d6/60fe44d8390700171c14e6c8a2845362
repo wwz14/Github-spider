@@ -1,0 +1,11 @@
+package gitlog;
+
+import java.sql.Connection;
+
+public class diff {
+	   Connection conn;
+	public diff(){
+		
+	}
+
+}
